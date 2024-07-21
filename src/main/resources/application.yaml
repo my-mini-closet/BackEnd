@@ -1,6 +1,6 @@
 spring:
   application:
-    name: alstarboard
+    name: mycloset
   output:
     ansi:
       enabled: always
