@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: alstarboard
+  output:
+    ansi:
+      enabled: always
+
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      force-request: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/alstarboard?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: wnghWkd3835!
+    # HikariCP?? ?????? ??? ??
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 60000
+      max-lifetime: 180000
+      pool-name: springHikariCP
+  # log ??
+  messages:
+    encoding: UTF-8
+
+
+  jpa:
+    open-in-view: false
+    show-sql: true # ??? SQL ??
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        ues_sql_comments: true
+
+image:
+  upload:
+    dir: src/main/resources/static/images
+  access:
+    url: /images
+
+server:
+  port: 8080
