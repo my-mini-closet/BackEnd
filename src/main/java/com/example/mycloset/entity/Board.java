@@ -34,7 +34,7 @@ public class Board {
     private Long unlike = 0L;
 
     @ManyToOne
-    @JoinColumn(name = "`user`")
+    @JoinColumn(name = "user")
     @ToString.Exclude
     private User user;
 
@@ -45,7 +45,9 @@ public class Board {
     @Column(nullable = false)
     @CreationTimestamp
     private Timestamp updatedAt;
-    /*
-    @Transient
-    private List<String> imageUrls;*/
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<BoardImage> images;
+
 }

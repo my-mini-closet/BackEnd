@@ -43,9 +43,9 @@ spring:
 
 image:
   upload:
-    dir: src/main/resources/static/images
+    dir: src/main/resources/static/boardImages
   access:
-    url: /images
+    url: /boardImages
 
 server:
   port: 8080
