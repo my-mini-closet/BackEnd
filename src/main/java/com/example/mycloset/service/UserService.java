@@ -12,6 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+
     public UserDTO updatePersonalColor(String email, String personalColor) {
         Optional<User> userOpt = userRepository.findByUserEmail(email);
         if (userOpt.isPresent()) {
