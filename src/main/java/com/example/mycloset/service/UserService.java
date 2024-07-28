@@ -23,4 +23,18 @@ public class UserService {
             return null;
         }
     }
+    public UserDTO signup(String email, String nickname, String password) {
+        Optional<User> userOpt = userRepository.findByUserEmail(email);
+        if (userOpt.isPresent()) {
+            return null;
+        } else {
+            User newUser = User.builder()
+                    .userEmail(email)
+                    .nickName(nickname)
+                    .password(password)
+                    .build();
+            User savedUser = userRepository.save(newUser);
+            return UserDTO.of(savedUser);
+        }
+    }
 }

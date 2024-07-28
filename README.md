@@ -8,5 +8,5 @@
 # [해야할 것]
 1. User login
 2. Board manage
-3. 각자 환경에서 datebase 실행 여부
+3. 각자 환경에서 database 실행 여부
 4. url setting check

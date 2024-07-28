@@ -14,9 +14,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/mycloset?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/mycloset?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
-    password: wnghWkd3835!
+    password: 1234
     # HikariCP?? ?????? ??? ??
     hikari:
       maximum-pool-size: 5
@@ -43,9 +43,9 @@ spring:
 
 image:
   upload:
-    dir: src/main/resources/static/images
+    dir: src/main/resources/static/boardImages
   access:
-    url: /images
+    url: /boardImages
 
 server:
   port: 8080

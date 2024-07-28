@@ -47,6 +47,7 @@ public class User {
                 .id(userDTO.getUserId())
                 .userEmail(userDTO.getUserEmail())
                 .nickName(userDTO.getUserNickname())
+                .password(userDTO.getPassword())
                 .build();
     }
 }
