@@ -1,12 +1,8 @@
 package com.example.mycloset.service;
 
-<<<<<<< HEAD
 import com.example.mycloset.dto.BoardDTO;
 import com.example.mycloset.entity.Board;
-=======
-import com.example.mycloset.entity.Board;
 import com.example.mycloset.entity.BoardImage;
->>>>>>> 18ec6eafe22bf5af22844ded838986788e92a20f
 import com.example.mycloset.entity.User;
 import com.example.mycloset.repository.BoardRepository;
 import com.example.mycloset.repository.UserRepository;
@@ -33,7 +29,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
-<<<<<<< HEAD
     public BoardDTO createBoard(String title, String text, Long userId) {
         Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isPresent()) {
@@ -101,10 +96,6 @@ public class BoardService {
         }
     }
 
-    public void deleteBoard(Long id) {
-        boardRepository.deleteById(id);
-    }
-=======
     // application.yaml 파일에서 설정한 값을 가져온다
     @Value("${image.upload.dir}")
 
@@ -115,7 +106,6 @@ public class BoardService {
 
 
     // @Transactional(readOnly = true)
-
 
     public Board saveBoardWithImages(String title, String text, Long userId, List<MultipartFile> files) throws IOException {
         // userId를 이용하여 user 테이블의 해당 사용자 정보를 가져온다
@@ -153,5 +143,7 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
->>>>>>> 18ec6eafe22bf5af22844ded838986788e92a20f
+    public void deleteBoard(Long id) {
+        boardRepository.deleteById(id);
+    }
 }

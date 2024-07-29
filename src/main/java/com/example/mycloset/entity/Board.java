@@ -26,15 +26,15 @@ public class Board {
     private String text;
 
     @Builder.Default
-    @Column(name = "`like`")
+    @Column(name = "like_count")
     private Long like = 0L;
 
     @Builder.Default
-    @Column(name = "`unlike`")
+    @Column(name = "unlike_count")
     private Long unlike = 0L;
 
     @ManyToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "user_id")
     @ToString.Exclude
     private User user;
 
