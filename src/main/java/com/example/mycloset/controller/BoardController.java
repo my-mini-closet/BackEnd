@@ -1,6 +1,7 @@
 package com.example.mycloset.controller;
 
 import com.example.mycloset.dto.BoardDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import com.example.mycloset.entity.Board;
 import com.example.mycloset.service.BoardService;
@@ -27,6 +28,13 @@ public class BoardController {
             @RequestParam("userId") Long userId,
             @RequestParam("files") List<MultipartFile> files) throws IOException {
         return boardService.saveBoardWithImages(title, text, userId, files);
+    }
+
+    @GetMapping("/page")
+    public Page<BoardDTO> getBoardsByPage(
+            @RequestParam int page,
+            @RequestParam(defaultValue = "20") int pageSize) {
+        return boardService.getBoardsByPage(page, pageSize);
     }
 
     @PostMapping("/create")
