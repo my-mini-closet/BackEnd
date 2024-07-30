@@ -12,5 +12,4 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     public List<Board> findByUserId(Long userId);
     public List<Board> findByUserUserEmail(String userEmail);
     public Board save(Board board);
-
 }

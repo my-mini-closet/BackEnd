@@ -9,6 +9,9 @@ import com.example.mycloset.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -119,7 +122,7 @@ public class BoardService {
                 .build();
 
         // 실제 경로 가져오기
-        File staticImageDir = new ClassPathResource("static/images").getFile();
+        File staticImageDir = new ClassPathResource("static/boardImages").getFile();
         String realPath = staticImageDir.getAbsolutePath();
 
         List<BoardImage> images = new ArrayList<>();
@@ -144,6 +147,22 @@ public class BoardService {
     }
 
     public void deleteBoard(Long id) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Board not found"));
+
+        // 실제 파일 시스템에서 이미지 파일 삭제
+        for (BoardImage image : board.getImages()) {
+            File file = new File(image.getPath());
+            if (file.exists()) {
+                file.delete();
+            }
+        }
         boardRepository.deleteById(id);
+    }
+
+    public Page<BoardDTO> getBoardsByPage(int page, int pageSize) {
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by( "createdAt").descending());
+        // entity -> dto 형태로 변환, 왜? entity가 기능이 많아서 무거우니까...
+        return boardRepository.findAll(pageRequest).map(BoardDTO::fromEntity);
     }
 }
