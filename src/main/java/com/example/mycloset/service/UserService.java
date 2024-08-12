@@ -12,7 +12,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
+    // 로그인 유효성 검사 메서드
+    public UserDTO login(String email, String password) {
+        Optional<User> userOpt = userRepository.findByUserEmail(email);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            // 비밀번호 검사
+            if (user.getPassword().equals(password)) {
+                return UserDTO.of(user);
+            }
+        }
+        return null; // 유효하지 않은 경우 null 반환
+    }
     public UserDTO updatePersonalColor(String email, String personalColor) {
         Optional<User> userOpt = userRepository.findByUserEmail(email);
         if (userOpt.isPresent()) {

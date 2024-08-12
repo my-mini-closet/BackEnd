@@ -14,8 +14,9 @@ public class WebSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/users/signup").permitAll() // signup 엔드포인트에 대한 접근 허용
-                        .anyRequest().authenticated()
+                        .requestMatchers("/**").permitAll() // signup 엔드포인트에 대한 접근 허용
+                        //.requestMatchers("/api/users/login").permitAll()
+                        //.anyRequest().authenticated()
                 );
         return http.build();
     }

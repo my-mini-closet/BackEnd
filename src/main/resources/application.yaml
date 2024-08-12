@@ -16,7 +16,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/mycloset?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
-    password: 1234
+    password: wnghWkd3835! #  실행환경에서 알아서 본인 비밀번호로 바꿔서 실행
     # HikariCP?? ?????? ??? ??
     hikari:
       maximum-pool-size: 5
