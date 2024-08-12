@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
-
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,9 +26,9 @@ public class BoardImage {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "board")
+    @JoinColumn(name = "board_id", nullable = false)
     @ToString.Exclude
-    private Board board; // Board 테이블의 외래 키
+    private Board board;
 
     @Column(nullable = false)
     @CreationTimestamp

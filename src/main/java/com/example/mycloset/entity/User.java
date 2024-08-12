@@ -4,7 +4,6 @@ import com.example.mycloset.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.bytecode.enhance.spi.EnhancementInfo;
 
 import java.sql.Timestamp;
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BoardImageRepository extends JpaRepository<Board, Long> {
+public interface BoardImageRepository extends JpaRepository<BoardImage, Long> {
     public List<BoardImage> findByBoardId(Long boardId);
     public BoardImage save(BoardImage boardImage);
 
