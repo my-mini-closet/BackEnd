@@ -44,6 +44,8 @@ public class BoardController {
         return boardService.createBoard(title, text, userId);
     }
 
+    @GetMapping("/{id}/{category}")
+    public List<BoardDTO> getCategoryBoards(@PathVariable Long id, @PathVariable String category) {return boardService.getBoardsByCategory(id, category); }
     @GetMapping("/all")
     public List<BoardDTO> getAllBoards() {
         return boardService.getAllBoards();
@@ -62,14 +64,14 @@ public class BoardController {
         return boardService.updateBoard(id, title, text);
     }
 
-    @PutMapping("/{id}/like")
-    public BoardDTO likeBoard(@PathVariable Long id) {
-        return boardService.likeBoard(id);
+    @PostMapping("/{id}/like")
+    public BoardDTO likeBoard(@PathVariable Long id, @RequestParam Long userId) {
+        return boardService.likeBoard(id, userId);
     }
 
-    @PutMapping("/{id}/unlike")
-    public BoardDTO unlikeBoard(@PathVariable Long id) {
-        return boardService.unlikeBoard(id);
+    @PostMapping("/{id}/unlike")
+    public BoardDTO unlikeBoard(@PathVariable Long id, @RequestParam Long userId) {
+        return boardService.unlikeBoard(id, userId);
     }
 
     @DeleteMapping("/{id}/delete")
