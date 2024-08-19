@@ -1,6 +1,7 @@
 package com.example.mycloset.service;
 
 import com.example.mycloset.dto.BoardDTO;
+import com.example.mycloset.dto.BoardImageDTO;
 import com.example.mycloset.entity.Board;
 import com.example.mycloset.entity.BoardImage;
 import com.example.mycloset.entity.User;
@@ -18,12 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,85 +33,61 @@ public class BoardService {
     private final UserRepository userRepository;
 
     public BoardDTO createBoard(String title, String text, Long userId) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            Board board = Board.builder()
-                    .title(title)
-                    .text(text)
-                    .user(user)
-                    .build();
-            Board savedBoard = boardRepository.save(board);
-            return BoardDTO.fromEntity(savedBoard);
-        } else {
-            throw new RuntimeException("User not found");
-        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Board board = Board.builder()
+                .title(title)
+                .text(text)
+                .user(user)
+                .build();
+        Board savedBoard = boardRepository.save(board);
+        return BoardDTO.fromEntity(savedBoard);
     }
-
+    @Transactional
     public List<BoardDTO> getAllBoards() {
-        List<Board> boards = boardRepository.findAll();
-        return boards.stream().map(BoardDTO::fromEntity).collect(Collectors.toList());
+        return boardRepository.findAll().stream()
+                .map(BoardDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public BoardDTO getBoardById(Long id) {
-        Optional<Board> boardOpt = boardRepository.findById(id);
-        if (boardOpt.isPresent()) {
-            return BoardDTO.fromEntity(boardOpt.get());
-        } else {
-            throw new RuntimeException("Board not found");
-        }
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Board not found"));
+        return BoardDTO.fromEntity(board);
     }
 
     public BoardDTO updateBoard(Long id, String title, String text) {
-        Optional<Board> boardOpt = boardRepository.findById(id);
-        if (boardOpt.isPresent()) {
-            Board board = boardOpt.get();
-            board.setTitle(title);
-            board.setText(text);
-            Board updatedBoard = boardRepository.save(board);
-            return BoardDTO.fromEntity(updatedBoard);
-        } else {
-            throw new RuntimeException("Board not found");
-        }
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Board not found"));
+        board.setTitle(title);
+        board.setText(text);
+        Board updatedBoard = boardRepository.save(board);
+        return BoardDTO.fromEntity(updatedBoard);
     }
 
     public BoardDTO likeBoard(Long id) {
-        Optional<Board> boardOpt = boardRepository.findById(id);
-        if (boardOpt.isPresent()) {
-            Board board = boardOpt.get();
-            board.setLike(board.getLike() + 1);
-            Board updatedBoard = boardRepository.save(board);
-            return BoardDTO.fromEntity(updatedBoard);
-        } else {
-            throw new RuntimeException("Board not found");
-        }
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Board not found"));
+        board.setLike(board.getLike() + 1);
+        Board updatedBoard = boardRepository.save(board);
+        return BoardDTO.fromEntity(updatedBoard);
     }
 
     public BoardDTO unlikeBoard(Long id) {
-        Optional<Board> boardOpt = boardRepository.findById(id);
-        if (boardOpt.isPresent()) {
-            Board board = boardOpt.get();
-            board.setUnlike(board.getUnlike() + 1);
-            Board updatedBoard = boardRepository.save(board);
-            return BoardDTO.fromEntity(updatedBoard);
-        } else {
-            throw new RuntimeException("Board not found");
-        }
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Board not found"));
+        board.setUnlike(board.getUnlike() + 1);
+        Board updatedBoard = boardRepository.save(board);
+        return BoardDTO.fromEntity(updatedBoard);
     }
 
-    // application.yaml 파일에서 설정한 값을 가져온다
     @Value("${image.upload.dir}")
-
     private String uploadDir;
 
     @Value("${image.access.url}")
     private String accessUrl;
 
-
-    // @Transactional(readOnly = true)
-
-    public Board saveBoardWithImages(String title, String text, Long userId, List<MultipartFile> files) throws IOException {
-        // userId를 이용하여 user 테이블의 해당 사용자 정보를 가져온다
+    public BoardDTO saveBoardWithImages(String title, String text, Long userId, List<MultipartFile> files) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -121,9 +97,8 @@ public class BoardService {
                 .user(user)
                 .build();
 
-        // 실제 경로 가져오기
-        File staticImageDir = new ClassPathResource("static/boardImages").getFile();
-        String realPath = staticImageDir.getAbsolutePath();
+        // 절대 경로를 사용하여 파일을 저장
+        String realPath = uploadDir;
 
         List<BoardImage> images = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -131,7 +106,14 @@ public class BoardService {
             String filePath = realPath + File.separator + fileName;
             String fileUrl = accessUrl + "/" + fileName;
 
+            System.out.println("Attempting to save file to: " + filePath);
+
             File dest = new File(filePath);
+            // 폴더가 존재하지 않으면 생성
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            // 파일 저장
             file.transferTo(dest);
 
             images.add(BoardImage.builder()
@@ -140,17 +122,16 @@ public class BoardService {
                     .board(board)
                     .build());
         }
-        // Board와 Image의 관계 설정, board에 이미지 리스트를 저장
-        board.setImages(images);
 
-        return boardRepository.save(board);
+        board.setImages(images);
+        Board savedBoard = boardRepository.save(board);
+        return BoardDTO.fromEntity(savedBoard);
     }
 
     public void deleteBoard(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Board not found"));
 
-        // 실제 파일 시스템에서 이미지 파일 삭제
         for (BoardImage image : board.getImages()) {
             File file = new File(image.getPath());
             if (file.exists()) {
@@ -161,8 +142,7 @@ public class BoardService {
     }
 
     public Page<BoardDTO> getBoardsByPage(int page, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by( "createdAt").descending());
-        // entity -> dto 형태로 변환, 왜? entity가 기능이 많아서 무거우니까...
+        PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("createdAt").descending());
         return boardRepository.findAll(pageRequest).map(BoardDTO::fromEntity);
     }
 }
