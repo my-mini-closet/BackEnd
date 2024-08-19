@@ -3,7 +3,6 @@ package com.example.mycloset.controller;
 import com.example.mycloset.dto.BoardDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-import com.example.mycloset.entity.Board;
 import com.example.mycloset.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +21,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/createwithimage")
-    public Board createBoardWithImages(
+    public BoardDTO createBoardWithImages(
             @RequestParam("title") String title,
             @RequestParam("text") String text,
             @RequestParam("userId") Long userId,
@@ -77,4 +76,5 @@ public class BoardController {
     public void deleteBoard(@PathVariable Long id) {
         boardService.deleteBoard(id);
     }
+
 }
