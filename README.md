@@ -10,3 +10,5 @@
 2. Board manage
 3. 각자 환경에서 database 실행 여부
 4. url setting check
+
+아 게시판 기능 다했다 ㅅㄱ
