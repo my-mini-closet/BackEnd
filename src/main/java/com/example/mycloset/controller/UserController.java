@@ -1,6 +1,7 @@
 package com.example.mycloset.controller;
 
 import com.example.mycloset.dto.UserDTO;
+import com.example.mycloset.entity.User;
 import com.example.mycloset.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,8 @@ public class UserController {
         }
     }
     @PostMapping("/updatePersonalColor")
-    public UserDTO updatePersonalColor(
-            @RequestParam String email,
-            @RequestParam String personalColor) throws IOException {
-        return userService.updatePersonalColor(email, personalColor);
+    public UserDTO updatePersonalColor(@RequestBody UserDTO userDTO){
+        return userService.updatePersonalColor(userDTO.getUserId(), userDTO.getPersonalColor());
     }
 
     @PostMapping("/signup")
