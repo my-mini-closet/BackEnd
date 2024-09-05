@@ -205,6 +205,7 @@ public class BoardService {
         return BoardDTO.fromEntity(savedBoard);
     }
 
+    @Transactional
     public void deleteBoard(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Board not found"));

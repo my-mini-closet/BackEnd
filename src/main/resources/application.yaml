@@ -47,7 +47,7 @@ image:
   upload:
     dir: C:\Temp\mycloset\src\main\resources\static\boardImages
   access:
-    url: http://223.194.154.145:8080/boardImages
+    url: http://223.194.155.239:8080/boardImages
 
 server:
   port: 8080
