@@ -53,10 +53,10 @@ public class UserServiceTest {
         String nickname = "testUser";
         String password = "password";
         String personalColor = "blue";
-
+        Long id = 1L;
         userService.signup(email, nickname, password); // First signup
 
-        UserDTO updatedUserDTO = userService.updatePersonalColor(email, personalColor);
+        UserDTO updatedUserDTO = userService.updatePersonalColor(id, personalColor);
 
         assertNotNull(updatedUserDTO);
         assertEquals(personalColor, updatedUserDTO.getPersonalColor());

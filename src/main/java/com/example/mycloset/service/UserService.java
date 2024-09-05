@@ -24,8 +24,8 @@ public class UserService {
         }
         return null; // 유효하지 않은 경우 null 반환
     }
-    public UserDTO updatePersonalColor(String email, String personalColor) {
-        Optional<User> userOpt = userRepository.findByUserEmail(email);
+    public UserDTO updatePersonalColor(Long userId, String personalColor) {
+        Optional<User> userOpt = userRepository.findById(userId);
         if (userOpt.isPresent()) {
             User updateUser = userOpt.get();
             updateUser.setPersonalColor(personalColor);
