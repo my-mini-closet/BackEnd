@@ -13,7 +13,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/mycloset?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
-    password: wnghWkd3835! #  실행환경에서 알아서 본인 비밀번호로 바꿔서 실행
+    password: 1234 #  실행환경에서 알아서 본인 비밀번호로 바꿔서 실행
     # HikariCP?? ?????? ??? ??
     hikari:
       maximum-pool-size: 5
@@ -45,9 +45,9 @@ spring:
 
 image:
   upload:
-    dir: C:\Temp\mycloset\src\main\resources\static\boardImages
+    dir: /home/ubuntu/mycloset/static/boardImages
   access:
-    url: http://223.194.155.239:8080/boardImages
+    url: http://54.180.224.157:8080/boardImages
 
 server:
   port: 8080
