@@ -3,9 +3,18 @@ from rembg import remove
 from PIL import Image
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 app = Flask(__name__)
 CORS(app)  # CORS 허용
+
+# Firebase Admin SDK 초기화
+cred = credentials.Certificate('my-mini-closets-firebase-adminsdk-b2zqb-5ee3b962e7.json')  # 서비스 계정 키 경로
+firebase_admin.initialize_app(cred)
+
+# Firestore 인스턴스 가져오기
+db = firestore.client()
 
 # 절대 경로 설정
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -43,18 +52,26 @@ def process_image():
     })
 
 def generate_doc_ids(userId, styleCategory, season):
-    # 딥러닝 모델을 이용해 docId를 예측하는 부분
-    # 실제로는 이곳에서 딥러닝 모델이나 알고리즘을 사용해 `docId`를 예측하게 됩니다.
-    
-    # 예시로 사용자, 스타일, 계절에 맞는 임의의 docId 리스트를 반환
-    # 이 부분을 실제 딥러닝 모델 예측으로 대체
-    print(f"Received userId: {userId}, styleCategory: {styleCategory}, season: {season}")
-    if styleCategory == "클래식" and season == "봄":
-        return ['1727118010943', '1727117942456']
-    elif styleCategory == "캐주얼" and season == "여름":
-        return ['1727112345678', '1727117654321']
-    else:
-        return ['1727119999999', '1727118888888']  # 기본으로 반환하는 더미 데이터
+    # Firestore 컬렉션에서 userId로 문서 필터링
+    try:
+        user_docs = db.collection('users').where('userId', '==', userId).stream()
+        doc_ids = []
+        
+        for doc in user_docs:
+            user_data = doc.to_dict()
+            
+            # Firestore에서 가져온 데이터와 styleCategory, season 비교
+            if user_data.get('styleCategory') == styleCategory and user_data.get('season') == season:
+                doc_ids.append(doc.id)
+        
+        # 만약 일치하는 docId가 없다면 기본 더미 데이터를 반환
+        if not doc_ids:
+            return ['1727119999999', '1727118888888']  # 기본 더미 docId
+        
+        return doc_ids
+    except Exception as e:
+        print(f"Error fetching Firestore data: {e}")
+        return ['1727119999999', '1727118888888']  # 오류 발생 시 기본 docId 반환
 
 @app.route('/get-doc-ids', methods=['POST'])
 def get_doc_ids():
@@ -68,7 +85,7 @@ def get_doc_ids():
     styleCategory = data['styleCategory']
     season = data['season']
 
-    # 딥러닝 모델 또는 다른 알고리즘을 사용해 docId 리스트를 생성
+    # Firebase에서 데이터를 가져와서 docId 리스트 생성
     doc_ids = generate_doc_ids(userId, styleCategory, season)
 
     # docId 리스트를 응답으로 반환
