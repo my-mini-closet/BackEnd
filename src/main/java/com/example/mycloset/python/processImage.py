@@ -24,16 +24,14 @@ def process_image():
     file = request.files['image']
     image = Image.open(file)
 
-    # 배경 제거
+    # 배경 제거 (투명 배경으로 만듦)
     output = remove(image)
 
-    # 처리된 이미지 저장
-    processed_image_path = os.path.join(PROCESSED_DIR, file.filename)
+    # 처리된 이미지 저장 (PNG 형식으로 저장)
+    processed_image_path = os.path.join(PROCESSED_DIR, f"{file.filename.split('.')[0]}.png")
     
-    if output.mode == 'RGBA':
-        output = output.convert('RGB')  # JPEG는 RGBA를 지원하지 않으므로 RGB로 변환
-
-    output.save(processed_image_path, format='JPEG')
+    # 투명 배경을 유지하기 위해 PNG 형식으로 저장
+    output.save(processed_image_path, format='PNG')
 
     # 처리된 파일이 존재하는지 확인
     if not os.path.exists(processed_image_path):
@@ -41,8 +39,40 @@ def process_image():
 
     # 처리된 이미지 URL 반환 (여기서 your-server-ip는 실제 Python 서버의 IP 또는 도메인)
     return jsonify({
-        'processed_image_url': f'http://192.168.149.136:5000/images/{file.filename}'
+        'processed_image_url': f'http://192.168.149.136:5000/images/{os.path.basename(processed_image_path)}'
     })
+
+def generate_doc_ids(userId, styleCategory, season):
+    # 딥러닝 모델을 이용해 docId를 예측하는 부분
+    # 실제로는 이곳에서 딥러닝 모델이나 알고리즘을 사용해 `docId`를 예측하게 됩니다.
+    
+    # 예시로 사용자, 스타일, 계절에 맞는 임의의 docId 리스트를 반환
+    # 이 부분을 실제 딥러닝 모델 예측으로 대체
+    print(f"Received userId: {userId}, styleCategory: {styleCategory}, season: {season}")
+    if styleCategory == "클래식" and season == "봄":
+        return ['1727118010943', '1727117942456']
+    elif styleCategory == "캐주얼" and season == "여름":
+        return ['1727112345678', '1727117654321']
+    else:
+        return ['1727119999999', '1727118888888']  # 기본으로 반환하는 더미 데이터
+
+@app.route('/get-doc-ids', methods=['POST'])
+def get_doc_ids():
+    # 요청 본문에서 데이터를 가져옴
+    data = request.get_json()
+
+    if not data or 'userId' not in data or 'styleCategory' not in data or 'season' not in data:
+        return jsonify({'error': 'Missing required parameters'}), 400
+
+    userId = data['userId']
+    styleCategory = data['styleCategory']
+    season = data['season']
+
+    # 딥러닝 모델 또는 다른 알고리즘을 사용해 docId 리스트를 생성
+    doc_ids = generate_doc_ids(userId, styleCategory, season)
+
+    # docId 리스트를 응답으로 반환
+    return jsonify({'docIds': doc_ids})
 
 # 처리된 이미지를 제공하는 엔드포인트
 @app.route('/images/<filename>')
