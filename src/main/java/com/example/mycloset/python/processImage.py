@@ -2,8 +2,10 @@ import os
 from rembg import remove
 from PIL import Image
 from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # CORS 허용
 
 # 절대 경로 설정
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -39,7 +41,7 @@ def process_image():
 
     # 처리된 이미지 URL 반환 (여기서 your-server-ip는 실제 Python 서버의 IP 또는 도메인)
     return jsonify({
-        'processed_image_url': f'http://54.180.224.157:5000/images/{file.filename}'
+        'processed_image_url': f'http://192.168.149.136:5000/images/{file.filename}'
     })
 
 # 처리된 이미지를 제공하는 엔드포인트
