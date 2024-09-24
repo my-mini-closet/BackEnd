@@ -6,6 +6,8 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+from FashionSetRecommender import RecSys
+
 app = Flask(__name__)
 CORS(app)  # CORS 허용
 
@@ -55,19 +57,22 @@ def generate_doc_ids(userId, styleCategory, season):
     # Firestore 컬렉션에서 userId로 문서 필터링
     try:
         user_docs = db.collection('users').where('userId', '==', userId).stream()
+        user_data_list = []
         doc_ids = []
-        
+
         for doc in user_docs:
             user_data = doc.to_dict()
-            
+
             # Firestore에서 가져온 데이터와 styleCategory, season 비교
             if user_data.get('weather') == season:
-                doc_ids.append(doc.id)
-        
+                user_data_list.append(user_data)
+
+        doc_ids = RecSys(styleCategory, user_data_list)
+
         # 만약 일치하는 docId가 없다면 기본 더미 데이터를 반환
         if not doc_ids:
             return ['1727119999999', '1727118888888']  # 기본 더미 docId
-        
+
         return doc_ids
     except Exception as e:
         print(f"Error fetching Firestore data: {e}")
