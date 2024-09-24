@@ -8,15 +8,17 @@
 
 from mlxtend.frequent_patterns import fpgrowth
 from KFDataset import *
-
+import os
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
+style = "클래식"
+json_file_path = os.path.join(os.path.dirname(__file__), 'COMBI_STATIC.json')
+csv_file_path = os.path.join(os.path.dirname(__file__), f'{style}_dataset.csv')
 # 대분류 탐색순서(우선도)
 CATEGORY_PRIORITY = ['아우터', '상의', '원피스', '하의']
 
 def get_valid_combi_set(style, len=1):
-    with open('COMBI_STATIC.json', 'r', encoding='UTF8') as jopen:
+    with open(json_file_path, 'r', encoding='UTF8') as jopen:
         COMBI_STATIC = json.load(jopen)
 
         # 해당 style에서 많이 조합된 옷 대분류 조합
@@ -72,7 +74,7 @@ def get_init_item(df, user_df, init_CAT, top_n=10):
 def get_init_item2(df, user_df, init_CAT, top_n=5):
     fpgrowth_dict = get_fpgrowth_score(df, label1=f'{init_CAT}_카테고리', label2=f'{init_CAT}_색상')
     init_items = []
-
+    user_df = pd.DataFrame(user_df)
     for _, row in user_df.iterrows():
         cat_value = row[f'{init_CAT}_카테고리']
         color_value = row[f'{init_CAT}_색상']
@@ -339,7 +341,7 @@ def Recommender1(style, udf):
     init_mix = [item.strip() for item in mix.split(',')]
 
     path = f'./{style}_dataset.csv'
-    df = pd.read_csv(path, encoding='utf-8', low_memory=False)
+    df = pd.read_csv(csv_file_path, encoding='utf-8', low_memory=False)
     # df = make_attdf(df)
     # print(df)
 
@@ -368,7 +370,7 @@ def make_attdf(user_df):
 
 
 if __name__ == '__main__':
-    with open('COMBI_STATIC.json', 'r', encoding='UTF8') as jopen:
+    with open(json_file_path, 'r', encoding='UTF8') as jopen:
         COMBI_STATIC = json.load(jopen)
 
     # for style in STYLE_CATEGORIES:
