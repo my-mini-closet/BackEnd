@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)  # CORS 허용
 
 # Firebase Admin SDK 초기화
-cred = credentials.Certificate('my-mini-closets-firebase-adminsdk-b2zqb-5ee3b962e7.json')  # 서비스 계정 키 경로
+cred = credentials.Certificate(r'C:\Temp\mycloset\src\main\java\com\example\mycloset\python\Final\my-mini-closets-firebase-adminsdk-b2zqb-5ee3b962e7.json')
 firebase_admin.initialize_app(cred)
 
 # Firestore 인스턴스 가져오기
@@ -62,7 +62,7 @@ def generate_doc_ids(userId, styleCategory, season):
 
         for doc in user_docs:
             user_data = doc.to_dict()
-
+            print(user_data) 
             # Firestore에서 가져온 데이터와 styleCategory, season 비교
             if user_data.get('weather') == season:
                 user_data_list.append(user_data)
