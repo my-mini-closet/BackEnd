@@ -61,7 +61,7 @@ def generate_doc_ids(userId, styleCategory, season):
             user_data = doc.to_dict()
             
             # Firestore에서 가져온 데이터와 styleCategory, season 비교
-            if user_data.get('styleCategory') == styleCategory and user_data.get('season') == season:
+            if user_data.get('weather') == season:
                 doc_ids.append(doc.id)
         
         # 만약 일치하는 docId가 없다면 기본 더미 데이터를 반환
