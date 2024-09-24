@@ -1,12 +1,15 @@
 import numpy as np
 import pandas as pd
 import json
-
+import os
 import concurrent.futures
 from tqdm import tqdm
 
 from KFDataset import *
 from Labels import *
+
+fjson_file_path = os.path.join(os.path.dirname(__file__), 'COMBI_STATIC.json')
+
 
 def tuple2str(t):
     return ', '.join(t)
@@ -51,5 +54,5 @@ if __name__ == '__main__':
 
         COMBI_STATIC[style] = {'style':style, 'total':total_converted, 'combi_static':combi_static_dict}
 
-    with open('COMBI_STATIC.json', 'w', encoding='UTF8') as f:
+    with open(fjson_file_path, 'w', encoding='UTF8') as f:
         json.dump(COMBI_STATIC, f, ensure_ascii=False, indent=4)
